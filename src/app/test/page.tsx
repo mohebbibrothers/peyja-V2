@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getAccount } from "@/lib/db";
 import { currentSessionToken, validSession } from "@/lib/session";
 import TestConsole from "@/components/TestConsole";
+import { testEnabled } from "@/lib/test";
 
 export const metadata = { title: "تست قابلیت‌ها · Peyja" };
 
 export default async function TestPage() {
+  if (!testEnabled()) notFound();
   const token = await currentSessionToken();
   const session = token ? validSession(token) : null;
   if (!session) redirect("/");

@@ -16,7 +16,7 @@ const firstHeader = (request: Request, names: string[]) => {
  *   action.list_posts -> async result of the list_posts request (our posts)
  *   comments          -> new comments
  *   messaging         -> new direct messages
- * Idempotent by event_id; optional HMAC signature verification.
+ * Idempotent by event_id; when configured, HMAC signature verification is required.
  */
 export async function POST(request: Request) {
   const raw = await request.text();
@@ -36,13 +36,10 @@ export async function POST(request: Request) {
     "x-hub-signature-256",
   ]);
 
-  // Verify only when the provider actually sent a signature.
-  if (cfg.webhookSecret && signature) {
-    const ok =
-      verifyWebhookSignature(raw, timestamp, signature, cfg.webhookSecret) ||
-      // some providers sign the raw body only, without the timestamp prefix
-      verifyWebhookSignature(raw, "", signature.replace(/^sha256=/, ""), cfg.webhookSecret);
-    if (!ok) return new NextResponse("invalid signature", { status: 401 });
+  // A configured secret makes the signature mandatory, including the timestamp.
+  // Otherwise anyone could POST forged posts/comments without an HMAC header.
+  if (cfg.webhookSecret && !verifyWebhookSignature(raw, timestamp, signature, cfg.webhookSecret)) {
+    return new NextResponse("invalid signature", { status: 401 });
   }
 
   let payload: any;

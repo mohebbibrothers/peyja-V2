@@ -12,6 +12,16 @@ import {
 import { currentSessionToken, validSession } from "@/lib/session";
 import { testEnabled } from "@/lib/test";
 
+/** An empty number field means "use the default", never zero posts. */
+function positiveLimit(value: unknown, fallback: number): number | null {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value !== "string" && typeof value !== "number") return null;
+  const text = String(value).trim();
+  if (!text) return fallback;
+  const n = Number(text);
+  return Number.isSafeInteger(n) && n >= 1 && n <= 100 ? n : null;
+}
+
 /**
  * Test harness: runs one SendBox capability and returns the provider's answer.
  * Every action is asynchronous at SendBox — the real result arrives via the
@@ -38,17 +48,40 @@ export async function POST(request: Request) {
       case "info":
         result = await getServiceInfo();
         break;
-      case "list_posts":
-        result = await listPosts(accountId, Number(body.limit ?? 5));
+      case "list_posts": {
+        const limit = positiveLimit(body.limit, 10);
+        if (limit === null) {
+          return NextResponse.json(
+            { ok: false, action, error: "تعداد باید یک عدد صحیح بین ۱ تا ۱۰۰ باشد." },
+            { status: 400 }
+          );
+        }
+        result = await listPosts(accountId, limit);
         break;
-      case "comments":
+      }
+      case "comments": {
+        const limit = positiveLimit(body.limit, 25);
+        if (limit === null) {
+          return NextResponse.json(
+            { ok: false, action, error: "تعداد باید یک عدد صحیح بین ۱ تا ۱۰۰ باشد." },
+            { status: 400 }
+          );
+        }
+        const mediaId = String(body.media_id ?? "").trim();
+        if (!mediaId) {
+          return NextResponse.json(
+            { ok: false, action, error: "media_id پست را وارد کن." },
+            { status: 400 }
+          );
+        }
         result = await getPostComments(
           accountId,
-          String(body.media_id ?? ""),
-          Number(body.limit ?? 25),
+          mediaId,
+          limit,
           body.after ? String(body.after) : undefined
         );
         break;
+      }
       case "reply_comment":
         result = await replyComment(accountId, String(body.comment_id ?? ""), String(body.message ?? ""));
         break;

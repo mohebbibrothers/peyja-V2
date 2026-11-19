@@ -296,10 +296,10 @@ export function countEvents(): number {
   return row.n;
 }
 
-export function listEvents(limit = 50): WebhookEvent[] {
+export function listEvents(accountId: string, limit = 50): WebhookEvent[] {
   return getDb()
-    .prepare("SELECT * FROM webhook_events ORDER BY created_at DESC LIMIT ?")
-    .all(limit) as WebhookEvent[];
+    .prepare("SELECT * FROM webhook_events WHERE account_id = ? ORDER BY created_at DESC LIMIT ?")
+    .all(accountId, limit) as WebhookEvent[];
 }
 
 export function deleteAccount(id: string): void {

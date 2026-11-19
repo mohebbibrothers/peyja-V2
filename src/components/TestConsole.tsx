@@ -18,7 +18,7 @@ const ACTIONS: {
   key: string;
   title: string;
   desc: string;
-  fields: { name: string; label: string; placeholder?: string }[];
+  fields: { name: string; label: string; placeholder?: string; initial?: string }[];
   submitLabel: string;
   danger?: boolean;
 }[] = [
@@ -156,10 +156,15 @@ export default function TestConsole({
     }
   };
 
-  const run = async (key: string, fields: string[]) => {
+  const latestPostsEvent = events.find((event) => event.event_type === "action.list_posts");
+  const postsResult = latestPostsEvent?.data?.data;
+  const returnedPosts = postsResult?.result?.data;
+  const requestedLimit = postsResult?.request?.limit;
+
+  const run = async (key: string, fields: (typeof ACTIONS)[number]["fields"]) => {
     setBusy(key);
     const payload: Record<string, string> = {};
-    for (const f of fields) payload[f] = values[key]?.[f] ?? "";
+    for (const f of fields) payload[f.name] = values[key]?.[f.name] ?? f.initial ?? "";
     try {
       const res = await fetch("/api/test/run", {
         method: "POST",
@@ -211,9 +216,17 @@ export default function TestConsole({
           <span className="chip">{savedPosts.length} پست</span>
         </div>
         <p className="mb-3 text-[11px] leading-5 text-slate-400">
-          بعد از زدن کارت «۲) لیست پست‌های پیج» و چند لحظه صبر، پست‌ها اینجا ذخیره می‌شوند. مقدار
-          <code dir="ltr"> id </code> همان <code dir="ltr">media_id</code> است که برای کارت ۳ لازم است.
+          اگر کارت ۲ پستی برگرداند، اینجا ذخیره می‌شود. مقدار <code dir="ltr">id</code> هر پست
+          همان <code dir="ltr">media_id</code> است که برای کارت ۳ لازم است؛ پاسخ ۲۰۲ شناسهٔ پست ندارد.
         </p>
+        {postsResult?.success === true && Array.isArray(returnedPosts) && returnedPosts.length === 0 && (
+          <p className="mb-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-6 text-amber-200">
+            نتیجهٔ آخرین وبهوک: ۰ پست. درخواست با <code dir="ltr">limit={requestedLimit}</code> ارسال شده.
+            {requestedLimit === 0
+              ? " کادر «تعداد» خالی مانده بود؛ عدد ۱۰ وارد کن و دوباره بزن."
+              : " اگر عدد مثبت است، فعلاً خودِ سرویس لیست خالی برگردانده؛ اتصال پیج و خروجی سرویس باید بررسی شود."}
+          </p>
+        )}
         {savedPosts.length === 0 ? (
           <p className="text-sm text-slate-400">
             هنوز پستی ذخیره نشده. کارت ۲ را اجرا کن و چند لحظه صبر کن.
@@ -268,7 +281,10 @@ export default function TestConsole({
                       <span className="mb-1 block text-[11px] text-slate-400">{f.label}</span>
                       <input
                         dir="ltr"
-                        defaultValue={values[a.key]?.[f.name] ?? ""}
+                        value={values[a.key]?.[f.name] ?? f.initial ?? ""}
+                        type={f.name === "limit" ? "number" : "text"}
+                        min={f.name === "limit" ? 1 : undefined}
+                        max={f.name === "limit" ? 100 : undefined}
                         placeholder={f.placeholder}
                         onChange={(e) =>
                           setValues((prev) => ({
@@ -285,7 +301,7 @@ export default function TestConsole({
 
               <button
                 type="button"
-                onClick={() => run(a.key, a.fields.map((f) => f.name))}
+                onClick={() => run(a.key, a.fields)}
                 disabled={busy === a.key}
                 className={`mt-4 w-full rounded-xl py-2.5 text-sm font-bold transition disabled:opacity-50 ${
                   a.danger
