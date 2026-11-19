@@ -87,6 +87,7 @@ copy .env.example .env.local
 
 ```
 BOXAPI_API_KEY=توکن_کپی_شده_از_پنل_SendBox
+BOXAPI_LOGIN_TOKEN=<توکن لینک ورود اینستاگرام>
 BOXAPI_LOGIN_URL=https://api.sendbox.chat
 BOXAPI_DOMAIN=https://xxxx.ngrok-free.dev
 BOXAPI_WEBHOOK_SECRET=

@@ -50,6 +50,7 @@
 
 ```env
 BOXAPI_API_KEY=<توکن فاز ۰>
+BOXAPI_LOGIN_TOKEN=<توکن لینک ورود اینستاگرام>
 BOXAPI_LOGIN_URL=https://api.sendbox.chat
 BOXAPI_DOMAIN=https://xxxx.ngrok-free.dev
 BOXAPI_WEBHOOK_SECRET=<اگر گرفتی>

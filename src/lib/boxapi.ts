@@ -15,6 +15,7 @@ export const BOXAPI_BASE = (
 
 export interface BoxapiConfig {
   apiKey: string;
+  loginToken: string;
   loginUrl: string;
   domain: string;
   webhookSecret: string;
@@ -26,12 +27,17 @@ export interface BoxapiConfig {
 
 export function boxapiConfig(): BoxapiConfig {
   const apiKey = process.env.BOXAPI_API_KEY || "";
+  // SendBox issues TWO different secrets:
+  //   BOXAPI_API_KEY    -> X-Api-Key header for API calls
+  //   BOXAPI_LOGIN_TOKEN-> the `token` query param of the Instagram login page
+  const loginToken = process.env.BOXAPI_LOGIN_TOKEN || "";
   const loginUrl = (process.env.BOXAPI_LOGIN_URL || "https://api.sendbox.chat").replace(/\/+$/, "");
   const domain = (process.env.BOXAPI_DOMAIN || "").trim();
   const webhookSecret = process.env.BOXAPI_WEBHOOK_SECRET || "";
   const appUrl = (process.env.APP_URL || "http://localhost:3000").replace(/\/+$/, "");
   return {
     apiKey,
+    loginToken,
     loginUrl,
     domain,
     webhookSecret,
@@ -42,11 +48,21 @@ export function boxapiConfig(): BoxapiConfig {
   };
 }
 
-/** Build the official Instagram login URL SendBox provides. */
+/**
+ * Build the official Instagram login URL.
+ * The `token` must be the *login* token (from the panel's "instagram oauth url"),
+ * NOT the API key — SendBox answers "Invalid Instagram login token." otherwise.
+ */
 export function buildLoginUrl(requestId: string): string {
-  const { loginUrl, apiKey } = boxapiConfig();
-  const params = new URLSearchParams({ token: apiKey, id: requestId });
+  const { loginUrl, loginToken, apiKey } = boxapiConfig();
+  const token = loginToken || apiKey;
+  const params = new URLSearchParams({ token, id: requestId });
   return `${loginUrl}/instagram-oauth?${params.toString()}`;
+}
+
+/** Service info: plan, domain, redirect url, the exact login URL and accounts. */
+export async function getServiceInfo(): Promise<any> {
+  return request("/service/info", { method: "GET" });
 }
 
 async function request(path: string, init?: RequestInit): Promise<any> {

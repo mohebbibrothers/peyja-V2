@@ -43,6 +43,7 @@ npm run dev
 ### ۳) تنظیم `.env.local`
 ```env
 BOXAPI_API_KEY=<توکن از مرحله ۱>
+BOXAPI_LOGIN_TOKEN=<توکن لینک ورود اینستاگرام>
 BOXAPI_LOGIN_URL=https://api.sendbox.chat
 BOXAPI_DOMAIN=<دامنه‌ی مرحله ۲>
 BOXAPI_WEBHOOK_SECRET=<اگر در پنل گرفتید، همین جا>
@@ -55,9 +56,12 @@ DB_PATH=./data/app.db
 > ⚠️ **دو توکن متفاوت دارید:**
 > ۱) **کلید API** (`BOXAPI_API_KEY`): برای صدا زدن API (لیست پست‌ها، کامنت، ارسال پیام). در پنل
 > SendBox جایی مثل «API Key / توکن دسترسی» نوشته می‌شود.
-> ۲) **توکن لینک ورود**: توکنی که در «لینک ورود اینستاگرام» می‌آید
+> ۲) **توکن لینک ورود** (`BOXAPI_LOGIN_TOKEN`): توکنی که در «لینک ورود اینستاگرام» می‌آید
 > (`https://api.sendbox.chat/instagram-oauth?token=...`). این فقط برای صفحه‌ی ورود است و
-> **کلید API نیست** (با این توکن صدا زدن `/service/info` خطای ۴۰۱ می‌دهد).
+> **کلید API نیست**. اگر کلید API را در پارامتر `token` بگذارید، SendBox خطای
+> `Invalid Instagram login token.` می‌دهد.
+>
+> می‌توانی همان لینک کامل را از `/service/info` هم بگیری (`instagram_oauth_url`).
 
 ### ۴) اجرا و تست
 ```bash
