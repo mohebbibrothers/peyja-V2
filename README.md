@@ -6,6 +6,9 @@
 > تکنولوژی: Next.js 15 · React 19 · Tailwind · SQLite (better-sqlite3)
 > مسیر: BoxAPI → Official Instagram API (base: `https://boxapi.ir/api/instagram`، هدر `X-Api-Key`)
 
+> **نیازمندی:** Node.js **۲۲ یا بالاتر** (تست‌شده روی ۲۶). به‌دلیل استفاده از باینری آماده‌ی
+> `better-sqlite3`، **بدون هیچ Visual Studio / build tools** اجرا می‌شود.
+
 ---
 
 ## اجرای سریع (حالت دمو)

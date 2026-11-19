@@ -16,7 +16,7 @@
 
 ---
 
-## بخش ۱ — بررسی Node.js (الزامی)
+## بخش ۱ — بررسی Node.js (الزامی: حداقل ۲۲)
 
 در CMD این دو دستور را بزن:
 
@@ -25,12 +25,17 @@ node -v
 npm -v
 ```
 
-- اگر چیزی مثل `v20.x.x` و `10.x.x` داد → اوکی.
-- اگر خطا داد (`not recognized`) → Node.js نصب نیست:
+- اگر نسخه‌ی نود **۲۲ یا بیشتر** بود (مثلاً `v22.x` یا `v26.x`) → اوکی، هیچ کاری لازم نیست.
+- اگر نسخه‌ی نود **۲۰ یا کمتر** بود → نسخه‌ی ۲۲ یا بالاتر نصب کن:
   1. برو به <https://nodejs.org>
-  2. نسخه‌ی **LTS** (۲۰ یا ۲۲) را دانلود و نصب کن (تمام مراحل Next → Next → Finish).
+  2. نسخه‌ی **LTS (۲۲ یا ۲۴)** را دانلود و نصب کن (تمام مراحل Next → Next → Finish).
   3. CMD را ببند و دوباره باز کن (تا PATH به‌روز شود).
   4. دوباره `node -v` را بزن.
+- اگر خطا داد (`not recognized`) → Node.js نصب نیست → همین مراحل بالا.
+
+> چرا حداقل ۲۲؟ نسخه‌ی جدید `better-sqlite3` (۱۳.x) باینری آماده دارد که فقط روی Node ۲۲+ کار می‌کند
+> و نیازی به کامپایل/Visual Studio نیست. اگر نود کمتر از ۲۲ باشد، با خطای `node-gyp / Visual Studio`
+> مواجه می‌شوی.
 
 ---
 
@@ -62,8 +67,8 @@ npm install
 
 - این کار را **حتماً** انجام بده؛ چون ZIP دانلودی پوشه‌ی `node_modules` را ندارد.
 - اگر کند بود: `npm install --no-audit --no-fund`
-- اگر خطای `better-sqlite3` داد: `npm install --build-from-source` را بزن؛ و اگر باز هم خطا داد،
-  «Visual Studio Build Tools» را نصب کن (گزینه‌ی Desktop development with C++).
+- اگر خطای `better-sqlite3` داد: یعنی نسخه‌ی نود زیر ۲۲ است. نسخه‌ی ۲۲ یا بالاتر نصب کن (بخش ۱).
+  Visual Studio Build Tools لازم نیست.
 
 ---
 
@@ -264,4 +269,4 @@ node scripts/check-db.js
 | آدرس تونل عوض شد | پنل و `.env.local` را با آدرس جدید به‌روز کن و اپ را ری‌استارت کن |
 | پورت ۳۰۰۰ اشغال است | `netstat -ano \| findstr :3000` و `taskkill /PID <PID> /F`، یا `-p 3001` |
 | همیشه دکمه‌ی اتصال می‌روی دمو | `DEMO_MODE=true` است؛ آن را `false` کن |
-| خطای `better-sqlite3` هنگام نصب | Visual Studio Build Tools (Desktop C++) را نصب کن و دوباره `npm install` بزن |
+| خطای `better-sqlite3` / `node-gyp` / Visual Studio | نسخه‌ی نود زیر ۲۲ است → نود ۲۲ یا بالاتر نصب کن. Visual Studio لازم نیست |
