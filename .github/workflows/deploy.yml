@@ -1,0 +1,33 @@
+name: Deploy
+
+# استقرار روی سرور خودتان با SSH.
+# برای استفاده: در مخزن GitHub → Settings → Secrets این مقادیر را اضافه کنید:
+#   SSH_HOST, SSH_USER, SSH_KEY (محتوای کلید خصوصی), APP_DIR, APP_URL
+# سپس از تب Actions → Deploy → Run workflow را بزنید.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            mkdir -p ${{ secrets.APP_DIR }}
+            cd ${{ secrets.APP_DIR }}
+            if [ ! -d .git ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            fi
+            git fetch origin
+            git reset --hard origin/main
+            cp ${{ secrets.APP_DIR }}/.env ./.env 2>/dev/null || true
+            docker compose up -d --build
