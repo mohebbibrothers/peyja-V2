@@ -4,8 +4,8 @@ import { boxapiConfig, buildLoginUrl } from "@/lib/boxapi";
 import { createOAuthRequest } from "@/lib/db";
 
 /**
- * Step 1 of the BoxAPI flow: create a unique request id and send the user to
- * the official Instagram login page hosted by BoxAPI.
+ * Step 1 of the SendBox flow: create a unique request id and send the user to
+ * the official Instagram login page hosted by SendBox.
  */
 export async function GET() {
   if (!boxapiConfig().configured) redirect("/?error=config");

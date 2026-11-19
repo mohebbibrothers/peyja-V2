@@ -1,4 +1,4 @@
-# راهنمای کامل اجرا روی ویندوز (Windows) — تست ۷ روزه‌ی BoxAPI
+# راهنمای کامل اجرا روی ویندوز (Windows) — تست ۷ روزه‌ی SendBox
 
 > این راهنما برای کسی است که پروژه را از GitHub به‌صورت ZIP دانلود کرده و روی ویندوز اجرا می‌کند.
 > تمام دستورها برای **CMD** (خط فرمان ویندوز) نوشته شده‌اند.
@@ -86,17 +86,17 @@ copy .env.example .env.local
 بعد فایل `.env.local` را با **Notepad** یا **VS Code** باز کن و این محتوا را بگذار:
 
 ```
-BOXAPI_API_KEY=توکن_کپی_شده_از_پنل_باکس‌API
-BOXAPI_LOGIN_URL=https://boxapi.ir
-BOXAPI_DOMAIN=https://xxxx.ngrok-free.app
+BOXAPI_API_KEY=توکن_کپی_شده_از_پنل_SendBox
+BOXAPI_LOGIN_URL=https://api.sendbox.chat
+BOXAPI_DOMAIN=https://xxxx.ngrok-free.dev
 BOXAPI_WEBHOOK_SECRET=
-BOXAPI_BASE_URL=https://boxapi.ir/api/instagram
-APP_URL=https://xxxx.ngrok-free.app
+BOXAPI_BASE_URL=https://api.sendbox.chat/api/v1
+APP_URL=https://xxxx.ngrok-free.dev
 DEMO_MODE=false
 DB_PATH=./data/app.db
 ```
 
-- `xxxx.ngrok-free.app` را با آدرس تونلِ مرحله‌ی ۶ عوض کن.
+- `xxxx.ngrok-free.dev` را با آدرس تونلِ مرحله‌ی ۶ عوض کن.
 - اگر پنل یک مقدار **Webhook Secret** می‌دهد، آن را در خط `BOXAPI_WEBHOOK_SECRET` بگذار؛ اگر نداد،
   خالی بگذار.
 - ذخیره را با کدینگ **UTF-8** انجام بده.
@@ -128,7 +128,7 @@ npm run dev
 
 ## بخش ۶ — نصب و راه‌اندازی ngrok (تونل عمومی)
 
-وبهوک BoxAPI باید بتواند از اینترنت به اپ تو در لپ‌تاپ بزند، پس به یک آدرس عمومی نیاز داری.
+وبهوک SendBox باید بتواند از اینترنت به اپ تو در لپ‌تاپ بزند، پس به یک آدرس عمومی نیاز داری.
 
 ### ۶.۱ نصب
 یکی از سه راه:
@@ -159,14 +159,14 @@ ngrok http 3000
 خروجی چیزی مثل این می‌شود:
 
 ```
-Forwarding  https://abcd1234.ngrok-free.app -> http://localhost:3000
+Forwarding  https://abcd1234.ngrok-free.dev -> http://localhost:3000
 ```
 
-همین `https://abcd1234.ngrok-free.app` را کپی کن. این آدرس را در **مرحله‌ی ۷** و در `.env.local`
+همین `https://abcd1234.ngrok-free.dev` را کپی کن. این آدرس را در **مرحله‌ی ۷** و در `.env.local`
 استفاده می‌کنی.
 
 > نکته‌ی مهم: در پلن رایگان، با هر بار بستن و اجرای دوباره‌ی ngrok، آدرس **عوض می‌شود**. وقتی عوض شد،
-> هم پنل BoxAPI و هم فایل `.env.local` را با آدرس جدید به‌روز کن و اپ را دوباره استارت کن
+> هم پنل SendBox و هم فایل `.env.local` را با آدرس جدید به‌روز کن و اپ را دوباره استارت کن
 > (`Ctrl+C` بعد `npm run dev`).
 >
 > نکته‌ی دوم: اولین بار که مرورگر لینک تونل را باز می‌کنی، صفحه‌ی هشدار ngrok می‌آید؛ دکمه‌ی
@@ -174,17 +174,17 @@ Forwarding  https://abcd1234.ngrok-free.app -> http://localhost:3000
 
 ---
 
-## بخش ۷ — ساخت اکانت تست ۷ روزه‌ی BoxAPI و پر کردن فیلدها
+## بخش ۷ — ساخت اکانت تست ۷ روزه‌ی SendBox و پر کردن فیلدها
 
 ### ۷.۱ ثبت‌نام
-1. برو به <https://boxapi.ir>
+1. برو به <https://sendbox.chat>
 2. **ورود / ثبت‌نام** را بزن → شماره موبایل یا ایمیل → کد تایید → ساخت حساب.
-3. یک **رمز عبور** برای حساب BoxAPI خودت انتخاب/ثبت کن و آن را یادداشت کن (همین را در مرحله‌ی ۷.۳
+3. یک **رمز عبور** برای حساب SendBox خودت انتخاب/ثبت کن و آن را یادداشت کن (همین را در مرحله‌ی ۷.۳
    در فیلد «رمز عبور» می‌زنی).
 
 ### ۷.۲ فعال‌سازی ۷ روز رایگان
 1. وارد پنل شو.
-2. برو به صفحه‌ی `boxapi.ir/dashboard/instagram-api-setting`
+2. برو به صفحه‌ی `app.sendbox.chat`
    (همان صفحه‌ای که چهار فیلد را دیدی).
 3. دکمه‌ی **«دریافت ۷ روز اشتراک رایگان»** را بزن و مراحل را تکمیل کن.
    - اگر پلن می‌خواهد انتخاب کنی، کوچک‌ترین/رایگان‌ترین گزینه را بزن.
@@ -194,17 +194,23 @@ Forwarding  https://abcd1234.ngrok-free.app -> http://localhost:3000
 
 | فیلد در پنل | چه چیزی بگذاری |
 |---|---|
-| **رمز عبور** | رمز عبور حساب BoxAPI خودت (همان مرحله‌ی ۷.۱) — فقط برای تأیید تغییرات است |
-| **دامنه (Domain)** | آدرس عمومی تونل: `https://abcd1234.ngrok-free.app` |
-| **آدرس بازگشت پس از ورود (Login Redirect URL)** | `https://abcd1234.ngrok-free.app/api/boxapi/callback` |
-| **آدرس Webhook** | `https://abcd1234.ngrok-free.app/api/boxapi/webhook` |
+| **رمز عبور** | رمز عبور حساب SendBox خودت (همان مرحله‌ی ۷.۱) — فقط برای تأیید تغییرات است |
+| **دامنه (Domain)** | آدرس عمومی تونل: `https://abcd1234.ngrok-free.dev` |
+| **آدرس بازگشت پس از ورود (Login Redirect URL)** | `https://abcd1234.ngrok-free.dev/api/boxapi/callback` |
+| **آدرس Webhook** | `https://abcd1234.ngrok-free.dev/api/boxapi/webhook` |
 
 اگر فیلدی با نام **Webhook Secret** دیدی و مقداری ساخت، آن را هم کپی کن و در `.env.local` خط
 `BOXAPI_WEBHOOK_SECRET` بگذار.
 
-### ۷.۴ گرفتن توکن API
-در همان صفحه‌ی تنظیمات API رسمی اینستاگرام، بخش **توکن دسترسی / کلید API** را پیدا کن و آن را
-کپی کن، بعد در `.env.local` خط `BOXAPI_API_KEY` بگذار.
+### ۷.۴ گرفتن کلید API
+در همان صفحه‌ی تنظیمات API، بخش **توکن دسترسی / کلید API** را پیدا کن و آن را کپی کن، بعد در
+`.env.local` خط `BOXAPI_API_KEY` بگذار.
+
+> ⚠️ **توکن لینک ورود با کلید API یکی نیست.**
+> توکنی که در «لینک ورود اینستاگرام» می‌بینی
+> (`https://api.sendbox.chat/instagram-oauth?token=...`) فقط برای صفحه‌ی ورود است. اگر آن را در
+> `BOXAPI_API_KEY` بگذاری، صدا زدن `/service/info` خطای **۴۰۱** می‌دهد.
+> کلید API را از بخش جداگانه‌ی «API Key / توکن دسترسی» بگیر.
 
 > توکن را جایی منتشر نکن و در GitHub نگذار. اگر لو رفت، در پنل دوباره بساز.
 
@@ -219,7 +225,7 @@ Forwarding  https://abcd1234.ngrok-free.app -> http://localhost:3000
 ## بخش ۸ — تست کامل (گرفتن آخرین پست پیج)
 
 1. در مرورگر <http://localhost:3000> دکمه‌ی **«اتصال با اینستاگرام»** را بزن.
-2. به صفحه‌ی ورود رسمی اینستاگرام (که توسط BoxAPI میزبانی می‌شود) برده می‌شوی → با **پیج تست** خودت
+2. به صفحه‌ی ورود رسمی اینستاگرام (که توسط SendBox میزبانی می‌شود) برده می‌شوی → با **پیج تست** خودت
    لاگین کن و دکمه‌ی **اجازه / Authorize** را بزن.
    - پیج باید **حرفه‌ای (Business/Creator)** باشد؛ اگر شخصی است، در اینستاگرام برو به
      Settings → Account type and tools → Switch to professional account.

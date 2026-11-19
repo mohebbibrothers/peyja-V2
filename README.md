@@ -1,10 +1,10 @@
-# Peyja · اتصال اینستاگرام با BoxAPI (API رسمی)
+# Peyja · اتصال اینستاگرام با SendBox (API رسمی)
 
-وب‌اپلیکیشنی که پیج اینستاگرام را از طریق **API رسمی اینستاگرام (BoxAPI / Meta Verified)** متصل می‌کند
+وب‌اپلیکیشنی که پیج اینستاگرام را از طریق **API رسمی اینستاگرام (SendBox / Meta Verified)** متصل می‌کند
 و **آخرین پست** را با جزئیات کامل در دیتابیس ذخیره می‌کند. رمز عبور کاربر هرگز به اپ نمی‌رسد.
 
 > تکنولوژی: Next.js 15 · React 19 · Tailwind · SQLite (better-sqlite3)
-> مسیر: BoxAPI → Official Instagram API (base: `https://boxapi.ir/api/instagram`، هدر `X-Api-Key`)
+> مسیر: SendBox → Official Instagram API (base: `https://api.sendbox.chat/api/v1`، هدر `X-Api-Key`)
 
 > **نیازمندی:** Node.js **۲۲ یا بالاتر** (تست‌شده روی ۲۶). به‌دلیل استفاده از باینری آماده‌ی
 > `better-sqlite3`، **بدون هیچ Visual Studio / build tools** اجرا می‌شود.
@@ -22,35 +22,42 @@ npm run dev
 
 ---
 
-## اتصال واقعی با BoxAPI (مراحل کامل)
+## اتصال واقعی با SendBox (مراحل کامل)
 
 ### ۱) ثبت‌نام و ۷ روز رایگان
-1. در [boxapi.ir](https://boxapi.ir) ثبت‌نام و ورود کنید.
-2. برو به `boxapi.ir/dashboard/instagram-api-setting` و دکمه‌ی **«دریافت ۷ روز اشتراک رایگان»** را بزن.
+1. در [sendbox.chat](https://sendbox.chat) ثبت‌نام و ورود کنید.
+2. برو به `app.sendbox.chat` و دکمه‌ی **«دریافت ۷ روز اشتراک رایگان»** را بزن.
 3. توکن دسترسی را از بخش **«تنظیمات API رسمی اینستاگرام»** کپی کن.
 
-### ۲) در پنل BoxAPI این ۴ فیلد را پر کنید
+### ۲) در پنل SendBox این ۴ فیلد را پر کنید
 | فیلد در پنل | مقدار |
 |---|---|
-| **رمز عبور** | رمز حساب BoxAPI خود را وارد کن (تأیید هویت) |
+| **رمز عبور** | رمز حساب SendBox خود را وارد کن (تأیید هویت) |
 | **دامنه (Domain)** | آدرس عمومی اپ شما، مثلاً `https://app.yourdomain.com` |
 | **آدرس بازگشت پس از ورود (Login Redirect URL)** | `{APP_URL}/api/boxapi/callback` |
 | **آدرس Webhook** | `{APP_URL}/api/boxapi/webhook` |
 
 > `{APP_URL}` را با آدرس عمومی و **HTTPS** اپ خود جایگزین کن. برای تست محلی باید یک تونل عمومی
-> (مثل ngrok / Cloudflare Tunnel) داشته باشی، چون BoxAPI باید وبهوک را صدا بزند.
+> (مثل ngrok / Cloudflare Tunnel) داشته باشی، چون SendBox باید وبهوک را صدا بزند.
 
 ### ۳) تنظیم `.env.local`
 ```env
 BOXAPI_API_KEY=<توکن از مرحله ۱>
-BOXAPI_LOGIN_URL=https://boxapi.ir
+BOXAPI_LOGIN_URL=https://api.sendbox.chat
 BOXAPI_DOMAIN=<دامنه‌ی مرحله ۲>
 BOXAPI_WEBHOOK_SECRET=<اگر در پنل گرفتید، همین جا>
-BOXAPI_BASE_URL=https://boxapi.ir/api/instagram
+BOXAPI_BASE_URL=https://api.sendbox.chat/api/v1
 APP_URL=https://app.yourdomain.com
 DEMO_MODE=false
 DB_PATH=./data/app.db
 ```
+
+> ⚠️ **دو توکن متفاوت دارید:**
+> ۱) **کلید API** (`BOXAPI_API_KEY`): برای صدا زدن API (لیست پست‌ها، کامنت، ارسال پیام). در پنل
+> SendBox جایی مثل «API Key / توکن دسترسی» نوشته می‌شود.
+> ۲) **توکن لینک ورود**: توکنی که در «لینک ورود اینستاگرام» می‌آید
+> (`https://api.sendbox.chat/instagram-oauth?token=...`). این فقط برای صفحه‌ی ورود است و
+> **کلید API نیست** (با این توکن صدا زدن `/service/info` خطای ۴۰۱ می‌دهد).
 
 ### ۴) اجرا و تست
 ```bash
@@ -71,19 +78,19 @@ src/
 │  ├─ page.tsx
 │  ├─ dashboard/page.tsx
 │  └─ api/
-│     ├─ boxapi/{start,callback,webhook}/   # فلوی اصلی BoxAPI
+│     ├─ boxapi/{start,callback,webhook}/   # فلوی اصلی SendBox
 │     ├─ auth/demo/                         # حالت دمو
 │     ├─ posts/                             # لیست پست‌ها (JSON)
 │     └─ account/{sync,disconnect}          # دریافت پست / قطع اتصال
 └─ lib/
-   ├─ boxapi.ts        # کلاینت BoxAPI + HMAC webhook + استخراج پست‌ها
+   ├─ boxapi.ts        # کلاینت SendBox + HMAC webhook + استخراج پست‌ها
    ├─ db.ts            # SQLite: accounts, posts, comments, oauth_requests, webhook_events, sessions
    └─ session.ts       # سشن بر پایه‌ی کوکی httpOnly
 ```
 
 ## وبهوک
 
-BoxAPI تا ۳ بار (فاصله‌ی ۶۰ ثانیه) retry می‌کند؛ اپ با `event_id` تکراری را حذف می‌کند و در صورت
+SendBox تا ۳ بار (فاصله‌ی ۶۰ ثانیه) retry می‌کند؛ اپ با `event_id` تکراری را حذف می‌کند و در صورت
 تنظیم `BOXAPI_WEBHOOK_SECRET`، امضای HMAC را با هدرهای `X-BoxApi-Signature` / `X-BoxApi-Timestamp`
 بررسی می‌کند. برای موفقیت، سریع `2xx` برگردان.
 
@@ -96,6 +103,6 @@ BoxAPI تا ۳ بار (فاصله‌ی ۶۰ ثانیه) retry می‌کند؛ ا
 
 ## نکات امنیتی
 
-- توکن BoxAPI فقط در سرور (`.env`) می‌ماند، در فرانت‌اند نیست.
+- توکن SendBox فقط در سرور (`.env`) می‌ماند، در فرانت‌اند نیست.
 - وبهوک با HMAC قابل احراز است.
 - ذخیره‌ی رمز عبور کاربر معنایی ندارد (لاگین در صفحه‌ی خود اینستاگرام است).

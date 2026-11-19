@@ -1,14 +1,16 @@
 import crypto from "node:crypto";
 
 /**
- * BoxAPI — Official Instagram API (Meta Verified reseller)
- * Docs: https://boxapi.ir/docs/instagram/
- * Base:  https://boxapi.ir/api/instagram
- * Auth:  header X-Api-Key
+ * SendBox — Instagram messaging API built on Meta's official Instagram API.
+ * Docs: https://sendbox.chat/api
+ * Base:  https://api.sendbox.chat/api/v1
+ * Auth:  header X-Api-Key  (the API key from the SendBox panel, NOT the login-link token)
+ *
+ * Note: the env vars keep the BOXAPI_* prefix for backwards compatibility.
  */
 
 export const BOXAPI_BASE = (
-  process.env.BOXAPI_BASE_URL || "https://boxapi.ir/api/instagram"
+  process.env.BOXAPI_BASE_URL || "https://api.sendbox.chat/api/v1"
 ).replace(/\/+$/, "");
 
 export interface BoxapiConfig {
@@ -24,7 +26,7 @@ export interface BoxapiConfig {
 
 export function boxapiConfig(): BoxapiConfig {
   const apiKey = process.env.BOXAPI_API_KEY || "";
-  const loginUrl = (process.env.BOXAPI_LOGIN_URL || "https://boxapi.ir").replace(/\/+$/, "");
+  const loginUrl = (process.env.BOXAPI_LOGIN_URL || "https://api.sendbox.chat").replace(/\/+$/, "");
   const domain = (process.env.BOXAPI_DOMAIN || "").trim();
   const webhookSecret = process.env.BOXAPI_WEBHOOK_SECRET || "";
   const appUrl = (process.env.APP_URL || "http://localhost:3000").replace(/\/+$/, "");
@@ -40,7 +42,7 @@ export function boxapiConfig(): BoxapiConfig {
   };
 }
 
-/** Build the official Instagram login URL BoxAPI provides. */
+/** Build the official Instagram login URL SendBox provides. */
 export function buildLoginUrl(requestId: string): string {
   const { loginUrl, apiKey } = boxapiConfig();
   const params = new URLSearchParams({ token: apiKey, id: requestId });
@@ -65,7 +67,7 @@ async function request(path: string, init?: RequestInit): Promise<any> {
     json = { raw: text };
   }
   if (!res.ok) {
-    const msg = json?.error?.message || json?.message || json?.error || `BoxAPI HTTP ${res.status}`;
+    const msg = json?.error?.message || json?.message || json?.error || `SendBox HTTP ${res.status}`;
     throw new Error(msg);
   }
   return json;
@@ -127,7 +129,7 @@ export function verifyWebhookSignature(
   signature: string,
   secret: string
 ): boolean {
-  if (!secret) return true; // no secret configured → BoxAPI sends no signature
+  if (!secret) return true; // no secret configured → SendBox sends no signature
   if (!/^\d+$/.test(timestamp)) return false;
   if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
   const expected =
@@ -139,7 +141,7 @@ export function verifyWebhookSignature(
 }
 
 /**
- * BoxAPI delivers list_posts results asynchronously:
+ * SendBox delivers list_posts results asynchronously:
  *   { event_id, event_type: "action.list_posts", account_id,
  *     data: { request, success, result, error } }
  * `result` shape is not fixed, so we try the common shapes.

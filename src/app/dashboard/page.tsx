@@ -64,7 +64,7 @@ export default async function Dashboard({
 
       {demo && (
         <div className="mb-6 rounded-2xl border border-sky-500/30 bg-sky-500/10 px-5 py-3.5 text-sm text-sky-200">
-          🧪 <b>حالت دمو</b> فعال است؛ داده‌ها واقعی نیستند. برای اتصال واقعی، کلید BoxAPI را در{" "}
+          🧪 <b>حالت دمو</b> فعال است؛ داده‌ها واقعی نیستند. برای اتصال واقعی، کلید SendBox را در{" "}
           <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs">.env.local</code> بگذارید و{" "}
           <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs">DEMO_MODE=false</code> کنید.
         </div>
@@ -77,7 +77,7 @@ export default async function Dashboard({
       )}
       {syncError && (
         <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-3.5 text-sm text-red-200">
-          ⚠️ ثبت درخواست ناموفق بود. کلید BoxAPI و اتصال را بررسی کنید.
+          ⚠️ ثبت درخواست ناموفق بود. کلید SendBox و اتصال را بررسی کنید.
         </div>
       )}
 
@@ -122,7 +122,7 @@ export default async function Dashboard({
           </dl>
 
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-3 text-[11px] leading-5 text-slate-400" dir="ltr">
-            <p className="font-semibold text-slate-300">Webhook URL (set in BoxAPI panel)</p>
+            <p className="font-semibold text-slate-300">Webhook URL (set in SendBox panel)</p>
             <p className="break-all">{cfg.webhookUrl}</p>
             <p className="mt-2 font-semibold text-slate-300">Login Redirect URL</p>
             <p className="break-all">{cfg.redirectUri}</p>

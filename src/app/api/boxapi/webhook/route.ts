@@ -4,7 +4,7 @@ import { boxapiConfig, extractPosts, verifyWebhookSignature } from "@/lib/boxapi
 import { eventExists, insertEvent, saveComment, savePost } from "@/lib/db";
 
 /**
- * Step 3 (real-time): BoxAPI pushes Instagram events here.
+ * Step 3 (real-time): SendBox pushes Instagram events here.
  *  - action.list_posts  → the result of the async list_posts request (our posts)
  *  - comments           → new comments
  *  - messaging          → new direct messages

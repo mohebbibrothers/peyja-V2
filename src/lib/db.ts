@@ -6,7 +6,7 @@ import path from "node:path";
 const DB_PATH = process.env.DB_PATH || path.join(process.cwd(), "data", "app.db");
 
 export interface Account {
-  id: string; // BoxAPI account_id (UUID)
+  id: string; // SendBox account_id (UUID)
   username: string;
   source: string; // 'boxapi' | 'demo'
   connected_at: number;

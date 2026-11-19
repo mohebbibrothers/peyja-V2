@@ -4,7 +4,7 @@ import { listPosts } from "@/lib/boxapi";
 import { currentSessionToken, validSession } from "@/lib/session";
 
 /**
- * Requests the latest post from BoxAPI. BoxAPI answers asynchronously, so the
+ * Requests the latest post from SendBox. SendBox answers asynchronously, so the
  * post arrives through the webhook and is stored in the database.
  */
 export async function POST() {

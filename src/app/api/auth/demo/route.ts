@@ -4,7 +4,7 @@ import { setSessionCookie } from "@/lib/session";
 
 /**
  * Demo mode: seeds a fake account + one fake post so the whole product can be
- * viewed without real BoxAPI credentials.
+ * viewed without real SendBox credentials.
  */
 export async function GET() {
   if (process.env.DEMO_MODE !== "true") redirect("/");

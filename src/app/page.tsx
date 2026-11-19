@@ -3,8 +3,8 @@ import { boxapiConfig } from "@/lib/boxapi";
 import { currentSessionToken, validSession } from "@/lib/session";
 
 const ERROR_TEXT: Record<string, string> = {
-  config: "کلید BoxAPI (BOXAPI_API_KEY) تنظیم نشده است. راهنمای تنظیم در README است.",
-  boxapi: "اتصال از طرف BoxAPI ناموفق بود.",
+  config: "کلید SendBox (BOXAPI_API_KEY) تنظیم نشده است. راهنمای تنظیم در README است.",
+  boxapi: "اتصال از طرف SendBox ناموفق بود.",
 };
 
 export default async function Home({
@@ -36,7 +36,7 @@ export default async function Home({
           </div>
           <div>
             <p className="text-lg font-extrabold leading-tight">Peyja · Instagram Connect</p>
-            <p className="text-xs text-slate-400">BoxAPI · Official Instagram API</p>
+            <p className="text-xs text-slate-400">SendBox · Official Instagram API</p>
           </div>
         </div>
         {session ? (
@@ -70,13 +70,13 @@ export default async function Home({
       <section className="mt-10 text-center">
         <div className="mb-6 inline-flex animate-fade-up items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-slate-300">
           <span className="h-2 w-2 rounded-full bg-emerald-400" />
-          BoxAPI · API رسمی اینستاگرام (Meta Verified)
+          SendBox · API رسمی اینستاگرام (Meta Verified)
         </div>
         <h1 className="mx-auto max-w-3xl text-4xl font-black leading-[1.25] animate-fade-up md:text-6xl">
           اتصال اینستاگرام و ذخیره‌ی <span className="text-gradient">خودکار</span> آخرین پست
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 animate-fade-up md:text-lg">
-          با API رسمی اینستاگرام از طریق BoxAPI و بدون دریافت رمز عبور کاربر، پیج را متصل کنید؛
+          با API رسمی اینستاگرام از طریق SendBox و بدون دریافت رمز عبور کاربر، پیج را متصل کنید؛
           آخرین پست با جزئیات کاملش در دیتابیس ذخیره می‌شود. لاگین رسمی، وبهوک لحظه‌ای، حداقل دسترسی.
         </p>
 
@@ -103,7 +103,7 @@ export default async function Home({
         {/* Status cards */}
         <div className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3">
           <div className="glass card-hover rounded-2xl p-5 text-right">
-            <p className="text-xs text-slate-400">اتصال به BoxAPI</p>
+            <p className="text-xs text-slate-400">اتصال به SendBox</p>
             <p className={`mt-2 text-lg font-bold ${cfg.configured ? "text-emerald-300" : "text-amber-300"}`}>
               {cfg.configured ? "✅ تنظیم شده" : "⚠️ در انتظار کلید"}
             </p>
@@ -131,16 +131,16 @@ export default async function Home({
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           <div className="glass card-hover rounded-3xl p-7">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-purple/20 text-xl font-black text-brand-purple">۱</div>
-            <h3 className="mt-5 text-lg font-bold">در BoxAPI ثبت‌نام کنید</h3>
+            <h3 className="mt-5 text-lg font-bold">در SendBox ثبت‌نام کنید</h3>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              در <b>boxapi.ir</b> ثبت‌نام کنید و <b>۷ روز اشتراک رایگان</b> بگیرید. توکن دسترسی
+              در <b>sendbox.chat</b> ثبت‌نام کنید و <b>۷ روز اشتراک رایگان</b> بگیرید. توکن دسترسی
               را از بخش «تنظیمات API رسمی اینستاگرام» کپی و در{" "}
               <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs">.env.local</code> بگذارید.
             </p>
           </div>
           <div className="glass card-hover rounded-3xl p-7">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-pink/20 text-xl font-black text-brand-pink">۲</div>
-            <h3 className="mt-5 text-lg bold">در پنل BoxAPI سه فیلد را پر کنید</h3>
+            <h3 className="mt-5 text-lg bold">در پنل SendBox سه فیلد را پر کنید</h3>
             <p className="mt-3 text-sm leading-7 text-slate-300">
               <b>Domain</b>، <b>Login Redirect URL</b> و <b>Webhook URL</b> را با آدرس عمومی اپ
               پر کنید (همان‌هایی که در پنل می‌بینید). آدرس‌ها را از قسمت «تنظیمات» همین اپ بخوانید.
@@ -162,7 +162,7 @@ export default async function Home({
         <h2 className="text-center text-2xl font-extrabold md:text-3xl">چرا این مسیر؟</h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { t: "بدون رمز عبور", d: "لاگین در صفحه‌ی رسمی اینستاگرام (از طریق BoxAPI) انجام می‌شود؛ اپ شما فقط account_id می‌گیرد.", c: "🔐" },
+            { t: "بدون رمز عبور", d: "لاگین در صفحه‌ی رسمی اینستاگرام (از طریق SendBox) انجام می‌شود؛ اپ شما فقط account_id می‌گیرد.", c: "🔐" },
             { t: "وبهوک لحظه‌ای", d: "کامنت‌ها، دایرکت‌ها و نتیجه‌ی list_posts به‌صورت Real-Time به وبهوک شما می‌رسند.", c: "⚡" },
             { t: "ذخیره ساختاریافته", d: "پست‌ها با کپشن، لایک، کامنت و لینک در دیتابیس SQLite ذخیره می‌شوند.", c: "🗄️" },
             { t: "آماده توسعه", d: "پاسخ به کامنت (reply_comment) و ارسال دایرکت (send_message) با همان کلید.", c: "🚀" },
@@ -179,7 +179,7 @@ export default async function Home({
       {/* Footer */}
       <footer className="mt-24 border-t border-white/10 pt-8 text-center text-xs text-slate-500">
         <p>
-          مسیر رسمی اینستاگرام از طریق BoxAPI · هیچ رمز عبوری ذخیره نمی‌شود · وبهوک با امضای HMAC
+          مسیر رسمی اینستاگرام از طریق SendBox · هیچ رمز عبوری ذخیره نمی‌شود · وبهوک با امضای HMAC
           قابل احراز است.
         </p>
       </footer>

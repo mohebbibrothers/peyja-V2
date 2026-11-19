@@ -1,5 +1,5 @@
 /**
- * به‌روزرسانی خودکار .env.local با آدرس تونل و چاپ مقادیری که باید در پنل BoxAPI بگذارید.
+ * به‌روزرسانی خودکار .env.local با آدرس تونل و چاپ مقادیری که باید در پنل SendBox بگذارید.
  *
  * اجرا (از پوشه‌ی پروژه):
  *   node scripts/setup-tunnel.js https://abcd1234.ngrok-free.app
@@ -34,7 +34,7 @@ set("APP_URL", tunnel);
 fs.writeFileSync(envPath, lines.join("\n"), "utf8");
 
 console.log("\n.env.local به‌روز شد به آدرس:", tunnel);
-console.log("\nاین سه مقدار را در پنل BoxAPI بگذار (دقیقاً همین‌ها):");
+console.log("\nاین سه مقدار را در پنل SendBox بگذار (دقیقاً همین‌ها):");
 console.log("  دامنه (Domain)              :", tunnel);
 console.log("  Login Redirect URL          :", tunnel + "/api/boxapi/callback");
 console.log("  Webhook URL                 :", tunnel + "/api/boxapi/webhook");
