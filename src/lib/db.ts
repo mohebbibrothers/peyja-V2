@@ -130,6 +130,15 @@ export function getDb(): Database.Database {
       expires_at INTEGER NOT NULL
     );
   `);
+
+  // ── مهاجرت‌های سبک (برای دیتابیس‌های ساخته‌شده با نسخه‌های قبلی) ─────────
+  const accountColumns = new Set(
+    (_db.prepare("PRAGMA table_info(accounts)").all() as { name: string }[]).map((c) => c.name)
+  );
+  if (!accountColumns.has("source")) {
+    _db.exec("ALTER TABLE accounts ADD COLUMN source TEXT NOT NULL DEFAULT 'boxapi'");
+  }
+
   return _db;
 }
 
