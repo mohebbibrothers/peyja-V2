@@ -116,6 +116,7 @@ export async function getAccounts(): Promise<any> {
   return request("/service/accounts", { method: "GET" });
 }
 
+/** پاسخ عمومی به یک کامنت */
 export async function replyComment(
   accountId: string,
   commentId: string,
@@ -127,14 +128,62 @@ export async function replyComment(
   });
 }
 
+/** پاسخ خصوصی (دایرکت) به کاربری که کامنت گذاشته */
+export async function privateReply(
+  accountId: string,
+  commentId: string,
+  message: string
+): Promise<any> {
+  return request("/service/actions/private_reply", {
+    method: "POST",
+    body: JSON.stringify({ account_id: accountId, comment_id: commentId, message }),
+  });
+}
+
+/** ارسال دایرکت */
 export async function sendMessage(
   accountId: string,
   recipientId: string,
-  message: string
+  message: string,
+  extra: { buttons?: any[]; quick_replies?: any[] } = {}
 ): Promise<any> {
   return request("/service/actions/send_message", {
     method: "POST",
-    body: JSON.stringify({ account_id: accountId, recipient_id: recipientId, message }),
+    body: JSON.stringify({
+      account_id: accountId,
+      recipient_id: recipientId,
+      message,
+      ...extra,
+    }),
+  });
+}
+
+/** وضعیت فالو بودن کاربر */
+export async function followStatus(accountId: string, customerId: string): Promise<any> {
+  return request("/service/actions/follow_status", {
+    method: "POST",
+    body: JSON.stringify({ account_id: accountId, customer_id: customerId }),
+  });
+}
+
+/** پروفایل کاربر اینستاگرام */
+export async function showProfile(accountId: string, customerId: string): Promise<any> {
+  return request("/service/actions/show_profile", {
+    method: "POST",
+    body: JSON.stringify({ account_id: accountId, customer_id: customerId }),
+  });
+}
+
+/** لیست کامنت‌های یک پست (صفحه‌بندی‌شده) */
+export async function getPostComments(
+  accountId: string,
+  mediaId: string,
+  limit = 25,
+  after?: string
+): Promise<any> {
+  return request("/service/actions/comment_comments", {
+    method: "POST",
+    body: JSON.stringify({ account_id: accountId, media_id: mediaId, limit, after }),
   });
 }
 

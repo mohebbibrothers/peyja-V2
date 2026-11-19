@@ -40,9 +40,14 @@ export default async function Home({
           </div>
         </div>
         {session ? (
-          <Link href="/dashboard" className="btn-ghost !px-5 !py-2.5 text-sm">
-            داشبورد ←
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/test" className="btn-ghost !px-5 !py-2.5 text-sm">
+              تست قابلیت‌ها
+            </Link>
+            <Link href="/dashboard" className="btn-ghost !px-5 !py-2.5 text-sm">
+              داشبورد ←
+            </Link>
+          </div>
         ) : (
           <a
             href={cfg.configured ? "/api/boxapi/start" : demo ? "/api/auth/demo" : "#setup"}

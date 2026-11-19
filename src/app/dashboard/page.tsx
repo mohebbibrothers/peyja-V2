@@ -55,6 +55,9 @@ export default async function Dashboard({
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <Link href="/test" className="btn-primary !px-4 !py-2 text-sm">
+            تست قابلیت‌ها
+          </Link>
           <Link href="/" className="btn-ghost !px-4 !py-2 text-sm">
             صفحه اصلی
           </Link>

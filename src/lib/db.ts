@@ -296,6 +296,12 @@ export function countEvents(): number {
   return row.n;
 }
 
+export function listEvents(limit = 50): WebhookEvent[] {
+  return getDb()
+    .prepare("SELECT * FROM webhook_events ORDER BY created_at DESC LIMIT ?")
+    .all(limit) as WebhookEvent[];
+}
+
 export function deleteAccount(id: string): void {
   const db = getDb();
   db.prepare("DELETE FROM posts WHERE account_id = ?").run(id);
