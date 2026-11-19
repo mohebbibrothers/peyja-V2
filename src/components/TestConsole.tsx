@@ -105,6 +105,8 @@ export default function TestConsole({
   accountId: string;
 }) {
   const [events, setEvents] = useState<EventsResponse["events"]>([]);
+  const [savedPosts, setSavedPosts] = useState<any[]>([]);
+  const [copied, setCopied] = useState<string | null>(null);
   const [values, setValues] = useState<{ [action: string]: { [field: string]: string } }>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [results, setResults] = useState<{ [action: string]: RunResult }>({});
@@ -121,13 +123,38 @@ export default function TestConsole({
     }
   }, []);
 
+  const loadSavedPosts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/test/posts", { cache: "no-store" });
+      if (!res.ok) return;
+      const json = await res.json();
+      setSavedPosts(json.posts ?? []);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   useEffect(() => {
     loadEvents();
-    timer.current = setInterval(loadEvents, 3000);
+    loadSavedPosts();
+    timer.current = setInterval(() => {
+      loadEvents();
+      loadSavedPosts();
+    }, 3000);
     return () => {
       if (timer.current) clearInterval(timer.current);
     };
-  }, [loadEvents]);
+  }, [loadEvents, loadSavedPosts]);
+
+  const copy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(text);
+      setTimeout(() => setCopied(null), 1200);
+    } catch {
+      /* ignore */
+    }
+  };
 
   const run = async (key: string, fields: string[]) => {
     setBusy(key);
@@ -175,6 +202,52 @@ export default function TestConsole({
           این صفحه فقط برای تست است. در محیط تولید باید <code dir="ltr">ENABLE_TEST_PAGE=false</code> شود.
           هر اکشنی که اجرا می‌کنی واقعاً به اینستاگرام ارسال می‌شود.
         </p>
+      </section>
+
+      {/* Saved posts — the source of media_id */}
+      <section className="glass rounded-3xl p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-extrabold">پست‌های ذخیره‌شده در دیتابیس (منبع media_id)</h3>
+          <span className="chip">{savedPosts.length} پست</span>
+        </div>
+        <p className="mb-3 text-[11px] leading-5 text-slate-400">
+          بعد از زدن کارت «۲) لیست پست‌های پیج» و چند لحظه صبر، پست‌ها اینجا ذخیره می‌شوند. مقدار
+          <code dir="ltr"> id </code> همان <code dir="ltr">media_id</code> است که برای کارت ۳ لازم است.
+        </p>
+        {savedPosts.length === 0 ? (
+          <p className="text-sm text-slate-400">
+            هنوز پستی ذخیره نشده. کارت ۲ را اجرا کن و چند لحظه صبر کن.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {savedPosts.map((p: any) => (
+              <div
+                key={p.id}
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm text-slate-200">{p.caption || "—"}</p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {p.media_type || "—"} · ❤️ {p.like_count ?? "—"} · 💬 {p.comments_count ?? "—"}
+                  </p>
+                </div>
+                <code
+                  dir="ltr"
+                  className="hidden max-w-[10rem] truncate rounded-lg bg-white/5 px-2 py-1 font-mono text-[11px] text-slate-300 sm:block"
+                >
+                  {p.id}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => copy(p.id)}
+                  className="shrink-0 rounded-xl bg-brand-purple/20 px-3 py-2 text-[11px] font-bold text-brand-purple hover:bg-brand-purple/30"
+                >
+                  {copied === p.id ? "کپی شد ✓" : "کپی media_id"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Capability cards */}
